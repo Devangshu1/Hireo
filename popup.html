@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hireo</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080810;
+      --surface: #0f0f1a;
+      --surface2: #161625;
+      --border: #1e1e30;
+      --text: #e8e8f4;
+      --muted: #5a5a7a;
+      --accent: #6366f1;
+      --accent2: #8b5cf6;
+
+      --safe: #22c55e;
+      --safe-bg: rgba(34,197,94,0.08);
+      --safe-border: rgba(34,197,94,0.2);
+
+      --warn: #f59e0b;
+      --warn-bg: rgba(245,158,11,0.08);
+      --warn-border: rgba(245,158,11,0.2);
+
+      --danger: #ef4444;
+      --danger-bg: rgba(239,68,68,0.08);
+      --danger-border: rgba(239,68,68,0.2);
+    }
+
+    body {
+      width: 380px;
+      min-height: 480px;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── Header ── */
+    .header {
+      padding: 16px 20px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0.4;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .brand-icon {
+      width: 30px;
+      height: 30px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+    }
+
+    .brand-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-name span { color: var(--accent); }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .icon-btn {
+      width: 30px;
+      height: 30px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      transition: background 0.15s, border-color 0.15s;
+      color: var(--muted);
+    }
+
+    .icon-btn:hover {
+      background: var(--surface2);
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    /* ── Body ── */
+    .body { padding: 18px 20px; }
+
+    /* ── Platform tag ── */
+    .platform-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .platform-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .platform-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .page-title {
+      font-size: 13px;
+      color: var(--muted);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ── Idle State ── */
+    #state-idle {
+      text-align: center;
+      padding: 28px 16px;
+    }
+
+    .idle-graphic {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      position: relative;
+    }
+
+    .idle-graphic::before {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border-radius: 24px;
+      background: radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%);
+    }
+
+    .idle-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .idle-sub {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* ── Loading State ── */
+    #state-loading { text-align: center; padding: 28px 16px; }
+
+    .loader-ring {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 20px;
+      position: relative;
+    }
+
+    .loader-ring svg {
+      animation: spin 1.2s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loader-ring-track { fill: none; stroke: var(--surface2); stroke-width: 4; }
+    .loader-ring-arc {
+      fill: none;
+      stroke: url(#grad);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 80 100;
+    }
+
+    .loading-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .loading-step {
+      font-size: 12px;
+      color: var(--muted);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
+
+    /* ── Result State ── */
+    #state-result { animation: fadeUp 0.4s ease; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+    /* Score Card */
+    .score-card {
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .score-card::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      opacity: 0.06;
+    }
+
+    .score-card.safe   { background: var(--safe-bg);   border-color: var(--safe-border); }
+    .score-card.suspicious { background: var(--warn-bg); border-color: var(--warn-border); }
+    .score-card.scam   { background: var(--danger-bg); border-color: var(--danger-border); }
+
+    .score-card.safe::before   { background: var(--safe);   }
+    .score-card.suspicious::before { background: var(--warn);   }
+    .score-card.scam::before   { background: var(--danger); }
+
+    .score-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .verdict-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 100px;
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border: 1px solid;
+    }
+
+    .safe .verdict-badge   { color: var(--safe);   background: rgba(34,197,94,0.1);  border-color: rgba(34,197,94,0.25); }
+    .suspicious .verdict-badge { color: var(--warn);   background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.25); }
+    .scam .verdict-badge   { color: var(--danger); background: rgba(239,68,68,0.1);  border-color: rgba(239,68,68,0.25); }
+
+    .score-number-wrap {
+      text-align: right;
+    }
+
+    .score-number {
+      font-family: 'Syne', sans-serif;
+      font-size: 38px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .safe .score-number   { color: var(--safe); }
+    .suspicious .score-number { color: var(--warn); }
+    .scam .score-number   { color: var(--danger); }
+
+    .score-label {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* Score Bar */
+    .score-bar-wrap {
+      margin-top: 14px;
+    }
+
+    .score-bar-track {
+      height: 5px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 1s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .safe .score-bar-fill   { background: var(--safe); }
+    .suspicious .score-bar-fill { background: var(--warn); }
+    .scam .score-bar-fill   { background: var(--danger); }
+
+    .score-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+    }
+
+    .sbl { font-size: 10px; color: var(--muted); }
+
+    /* Summary */
+    .summary-text {
+      font-size: 13px;
+      color: #a0a0c0;
+      line-height: 1.6;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* Flags Section */
+    .flags-section {
+      margin-bottom: 14px;
+    }
+
+    .section-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .flag-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .flag-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 12.5px;
+      color: #c0c0d8;
+      line-height: 1.4;
+    }
+
+    .flag-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+
+    .flag-item.green { border-color: rgba(34,197,94,0.15); background: rgba(34,197,94,0.04); }
+    .flag-item.red   { border-color: rgba(239,68,68,0.15);  background: rgba(239,68,68,0.04); }
+
+    /* Recommendation */
+    .recommendation {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    .rec-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .rec-text {
+      font-size: 13px;
+      color: #a0a0c0;
+      line-height: 1.5;
+    }
+
+    /* Powered by row */
+    .analysis-source {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .source-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 100px;
+      font-size: 11px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+    }
+
+    .source-pill.ai-pill { border-color: rgba(99,102,241,0.3); color: #818cf8; background: rgba(99,102,241,0.08); }
+
+    /* Confidence */
+    .confidence-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .conf-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .conf-Low    { background: #6b7280; }
+    .conf-Medium { background: var(--warn); }
+    .conf-High   { background: var(--safe); }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.15s, transform 0.1s;
+      letter-spacing: 0.01em;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(99,102,241,0.25);
+    }
+
+    .btn-primary:hover { opacity: 0.9; }
+
+    .btn-ghost {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-ghost:hover { background: var(--surface2); border-color: var(--accent); }
+
+    /* Error State */
+    #state-error { padding: 28px 16px; text-align: center; }
+
+    .error-icon { font-size: 36px; margin-bottom: 14px; }
+
+    .error-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .error-msg {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    /* No content state */
+    #state-no-content { padding: 28px 16px; text-align: center; }
+
+    /* Separator */
+    .sep {
+      height: 1px;
+      background: var(--border);
+      margin: 14px 0;
+    }
+
+    /* Footer */
+    .footer {
+      padding: 10px 20px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-tag {
+      font-size: 11px;
+      color: #2a2a4a;
+    }
+
+    .footer-tag span { color: #3a3a6a; }
+
+    .settings-link {
+      font-size: 11.5px;
+      color: var(--muted);
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.15s;
+    }
+
+    .settings-link:hover { color: var(--accent); }
+
+    /* Utility */
+    .hidden { display: none !important; }
+
+    /* AI badge pulse */
+    .ai-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: aipulse 2s ease-in-out infinite;
+    }
+
+    @keyframes aipulse {
+      0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(99,102,241,0.4); }
+      50% { opacity:0.7; box-shadow: 0 0 0 4px rgba(99,102,241,0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="brand">
+      <div class="brand-icon">🔍</div>
+      <div class="brand-name">Hireo<span>.</span></div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="refreshBtn" title="Re-analyze">↺</button>
+      <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="body">
+
+    <!-- Platform Row -->
+    <div class="platform-row" id="platformRow">
+      <div class="platform-pill">
+        <div class="platform-dot"></div>
+        <span id="platformName">Detecting...</span>
+      </div>
+      <div class="page-title" id="pageTitle">—</div>
+    </div>
+
+    <!-- State: Idle -->
+    <div id="state-idle">
+      <div class="idle-graphic">🛡️</div>
+      <div class="idle-title">Scam Job Detector</div>
+      <p class="idle-sub">Navigate to any job posting and hit Analyze to check if it's legitimate or a scam.</p>
+      <button class="btn btn-primary" id="analyzeBtn" style="width:100%">Analyze This Job</button>
+    </div>
+
+    <!-- State: Loading -->
+    <div id="state-loading" class="hidden">
+      <div class="loader-ring">
+        <svg viewBox="0 0 56 56" width="56" height="56">
+          <defs>
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#6366f1"/>
+              <stop offset="100%" stop-color="#8b5cf6"/>
+            </linearGradient>
+          </defs>
+          <circle class="loader-ring-track" cx="28" cy="28" r="22"/>
+          <circle class="loader-ring-arc" cx="28" cy="28" r="22" transform="rotate(-90 28 28)"/>
+        </svg>
+      </div>
+      <div class="loading-label">Analyzing job post…</div>
+      <div class="loading-step" id="loadingStep">Extracting content</div>
+    </div>
+
+    <!-- State: No Content -->
+    <div id="state-no-content" class="hidden">
+      <div style="font-size:36px;margin-bottom:14px">📄</div>
+      <div class="error-title">No Job Content Found</div>
+      <p class="error-msg">This page doesn't appear to be a job posting, or content couldn't be extracted. Try navigating directly to a job listing.</p>
+      <button class="btn btn-ghost" id="retryNoContent" style="width:100%">Try Again</button>
+    </div>
+
+    <!-- State: Error -->
+    <div id="state-error" class="hidden">
+      <div class="error-icon">⚠️</div>
+      <div class="error-title" id="errorTitle">Something went wrong</div>
+      <p class="error-msg" id="errorMsg">An error occurred while analyzing this job post.</p>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="errorRetryBtn">Retry</button>
+        <button class="btn btn-primary" id="errorSettingsBtn">Check Settings</button>
+      </div>
+    </div>
+
+    <!-- State: Result -->
+    <div id="state-result" class="hidden">
+
+      <!-- Score Card -->
+      <div class="score-card" id="scoreCard">
+        <div class="score-header">
+          <div>
+            <div class="verdict-badge" id="verdictBadge">—</div>
+            <div class="confidence-row" style="margin-top:8px" id="confidenceRow"></div>
+          </div>
+          <div class="score-number-wrap">
+            <div class="score-number" id="scoreNumber">—</div>
+            <div class="score-label">Risk Score</div>
+          </div>
+        </div>
+
+        <div class="score-bar-wrap">
+          <div class="score-bar-track">
+            <div class="score-bar-fill" id="scoreBarFill" style="width:0%"></div>
+          </div>
+          <div class="score-bar-labels">
+            <span class="sbl">Safe</span>
+            <span class="sbl">Suspicious</span>
+            <span class="sbl">Scam</span>
+          </div>
+        </div>
+
+        <div class="summary-text" id="summaryText"></div>
+      </div>
+
+      <!-- Analysis source pills -->
+      <div class="analysis-source" id="analysisBadges"></div>
+
+      <!-- Red Flags -->
+      <div class="flags-section" id="redFlagsSection" style="display:none">
+        <div class="section-label">🚩 Red Flags Detected</div>
+        <div class="flag-list" id="redFlagsList"></div>
+      </div>
+
+      <!-- Green Flags -->
+      <div class="flags-section" id="greenFlagsSection" style="display:none">
+        <div class="section-label">✅ Positive Signals</div>
+        <div class="flag-list" id="greenFlagsList"></div>
+      </div>
+
+      <!-- Recommendation -->
+      <div class="recommendation" id="recommendationBox" style="display:none">
+        <div class="rec-label">💡 Recommendation</div>
+        <div class="rec-text" id="recommendationText"></div>
+      </div>
+
+      <!-- Actions -->
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="resultRefreshBtn">Re-analyze</button>
+        <button class="btn btn-primary" id="shareBtn">Copy Report</button>
+      </div>
+
+    </div>
+    <!-- /state-result -->
+
+  </div>
+  <!-- /body -->
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-tag">Hireo <span>v1.0</span></div>
+    <a class="settings-link" id="settingsLink">⚙ Settings</a>
+  </div>
+
+  <script src="src/detector.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
