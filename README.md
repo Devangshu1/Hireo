@@ -1,4 +1,4 @@
-## 📸 Hireo – Smart Job Scam Detector
+## Hireo – Job Scam Detector (extension)
 
 ![Hireo Preview](Img/main.png)
 
